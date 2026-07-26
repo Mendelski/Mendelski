@@ -24,17 +24,16 @@ Antes disso: hub de pagamentos e order book cripto (Navi), checkout e coproduç�
 
 ---
 
+
 ## Como eu trabalho
 
-Cinco hábitos, e onde conferir cada um nos repositórios públicos aqui do lado.
+Não parto da premissa de que a primeira resposta está certa. Parto da premissa de que ela ainda não foi suficientemente testada.
 
-- **A decisão vem antes do código, e fica escrita com a alternativa que descartei.** No `newsletter-api-laravel12` a ADR que define onde a regra de negócio vai morar é anterior à primeira regra de negócio do projeto.
-- **Convenção que não é verificada não existe.** As regras de arquitetura viram teste que roda no CI: a peça no lugar errado quebra o build, em vez de virar comentário em code review seis meses depois.
-- **Número só entra no texto com o comando que reproduz ao lado.** Quando descobri que um script media coisa diferente do que o README afirmava, o commit corrigiu o script, não o texto.
-- **Cobertura alta onde o erro é caro, não no projeto inteiro.** Na camada que move a entrega: 100% de linhas e teste de mutação com mínimo declarado. No resto, o suficiente.
-- **Uso IA no fluxo de engenharia, com verificação adversarial.** Nenhuma conclusão vira decisão sem prova contra a fonte primária, seja banco de produção, API viva ou relatório oficial. Quem confere no fim é o CI, que não aceita argumento.
-
-O mesmo método aplicado ao meu produto: auditoria própria sobre os 421 arquivos do SmartPalace, 39 achados brutos, 38 confirmados depois de verificação e 1 descartado como falso positivo, cada um com arquivo, linha e o mecanismo da falha.
+- **Procuro primeiro validar as decisões, onde e como uma decisão pode falhar.** Antes de escolher uma arquitetura, uma regra de negócio ou uma implementação, tento encontrar os cenários que a quebram. Se continua fazendo sentido depois disso, aí sim ela vira código.
+- **Código não é a única evidência.** README, documentação, comentários e até testes podem estar errados. Sempre que algo importante precisa ser provado, vou até a fonte: banco de dados, API real, logs, comportamento da aplicação ou documentação oficial.
+- **Uso IA como uma ferramenta técnica, não como um oráculo.** Ela acelera pesquisa, gera hipóteses e encontra pontos cegos, mas nenhuma resposta entra no projeto sem confronto com a documentação oficial ou com experimentos reproduzíveis. Quanto mais convincente parece uma resposta, mais ela merece ser verificada.
+- **Automatizo tudo que não quero depender da memória das pessoas.** Convenções importantes viram testes. Regras arquiteturais viram CI. O objetivo é que o repositório saiba dizer quando algo está errado, sem depender de alguém lembrar durante um code review.
+- **Prefiro uma verdade reproduzível a uma opinião bem escrita.** Sempre que apresento um número, uma conclusão ou uma decisão técnica, procuro deixar claro de onde ela veio e como qualquer pessoa pode chegar ao mesmo resultado.
 
 ---
 
