@@ -1,8 +1,8 @@
 # Erick Mendelski
 
-Engenheiro de software líder na **Qa+**, onde arquiteto plataformas financeiras multi-tenant em Laravel, React e PostgreSQL. Antes disso: hub de pagamentos e order book cripto (Navi), checkout e coprodução (TheMembers), ERP e migração de 9 anos de histórico contábil com validação de paridade.
+Engenheiro de software líder na **Qa+**, onde defino stack, arquitetura e prioridade técnica dos produtos digitais do grupo. Trabalho com sistemas financeiros multi-tenant: ERP, checkout, conciliação e migração de dados contábeis.
 
-O que faço melhor: recuperar sistema legado sem parar o produto, e transformar decisão técnica em decisão de negócio escrita.
+Antes disso: hub de pagamentos e order book cripto (Navi), checkout e coprodução (TheMembers), pagamento em eventos (Yuzer). Desde 2018 o assunto é o mesmo, software onde dinheiro não pode sumir.
 
 [![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=flat-square&logo=php&logoColor=white)](#)
 [![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white)](#)
@@ -17,73 +17,51 @@ O que faço melhor: recuperar sistema legado sem parar o produto, e transformar 
 
 ## No que trabalho hoje
 
-- Lidero a engenharia dos produtos do grupo Qa+: defino stack, arquitetura e prioridade técnica, e respondo por disponibilidade, performance e custo de nuvem em produção.
-- - Infraestrutura híbrida: VMs em datacenter nacional para o legado e Laravel Cloud para os produtos novos.
-  - - Domínio recorrente: sistemas financeiros multi-tenant, integração de PDV e ERP, checkout, conciliação e migração de dados contábeis.
-   
-    - ---
+- Direção técnica dos produtos digitais do grupo Qa+, respondendo por arquitetura, disponibilidade, performance e custo de nuvem em produção.
+- Infraestrutura híbrida: VMs em datacenter nacional para o legado e Laravel Cloud para os produtos novos.
+- Domínio recorrente: multi-tenant, integração de PDV e ERP, checkout, conciliação e migração de dados contábeis.
+- Fora do expediente, mantenho o **SmartPalace** em produção, um PMS hoteleiro multi-tenant de autoria própria, com assistente de IA integrado.
 
-    ## Três decisões técnicas, com o trade-off que aceitei
+---
 
-    As linhas abaixo apontam para o commit, não para a branch, então o link continua válido depois de qualquer refatoração.
+## Como eu trabalho
 
-    **1. O telefone do lead quando o WhatsApp entrega um LID em vez do número**
+Cinco hábitos, e onde conferir cada um nos repositórios públicos aqui do lado.
 
-    Em contas com privacidade aumentada o remoteJid chega como LID (identificador interno) e, no Baileys novo, o LID às vezes vem disfarçado dentro de @s.whatsapp.net. Gravar isso como telefone contamina o CRM com número que não existe.
+- **A decisão vem antes do código, e fica escrita com a alternativa que descartei.** No `newsletter-api-laravel12` a ADR que define onde a regra de negócio vai morar é anterior à primeira regra de negócio do projeto.
+- **Convenção que não é verificada não existe.** As regras de arquitetura viram teste que roda no CI: a peça no lugar errado quebra o build, em vez de virar comentário em code review seis meses depois.
+- **Número só entra no texto com o comando que reproduz ao lado.** Quando descobri que um script media coisa diferente do que o README afirmava, o commit corrigiu o script, não o texto.
+- **Cobertura alta onde o erro é caro, não no projeto inteiro.** Na camada que move a entrega: 100% de linhas e teste de mutação com mínimo declarado. No resto, o suficiente.
+- **Uso IA no fluxo de engenharia, com verificação adversarial.** Nenhuma conclusão vira decisão sem prova contra a fonte primária, seja banco de produção, API viva ou relatório oficial. Quem confere no fim é o CI, que não aceita argumento.
 
-    Decidi resolver por cadeia de candidatos, senderPn → participantPn → remoteJidAlt → remoteJid, aceitando só o primeiro que passa numa validação de formato (BR: 12 ou 13 dígitos; demais DDIs: 10 a 13).
+O mesmo método aplicado ao meu produto: auditoria própria sobre os 421 arquivos do SmartPalace, 39 achados brutos, 38 confirmados depois de verificação e 1 descartado como falso positivo, cada um com arquivo, linha e o mecanismo da falha.
 
-    **Trade-off:** E.164 vai até 15 dígitos, e cortar em 13 descarta um caso teórico raríssimo para barrar praticamente todo LID disfarçado. Preferi lead sem telefone, editável no painel, a lead com telefone falso.
+---
 
-    → [whatsapp/utils.ts#L21-L56](https://github.com/Mendelski/ai-chatbot/blob/431f90a41cab8d2b13266a903b40bffe6efb8b42/backend/src/modules/whatsapp/utils.ts#L21-L56) · [whatsapp/handler.ts#L49-L55](https://github.com/Mendelski/ai-chatbot/blob/431f90a41cab8d2b13266a903b40bffe6efb8b42/backend/src/modules/whatsapp/handler.ts#L49-L55)
+## Projetos
 
-    **2. O pushName do WhatsApp não vira nome do lead**
+| Projeto | O que é | Stack |
+|---|---|---|
+| **[newsletter-api-laravel12](https://github.com/Mendelski/newsletter-api-laravel12)** | API de publicação por tópicos com entrega assíncrona confiável: fan-out em lote, entrega idempotente por chave única no banco, retry com backoff, dead-letter e rate limit por provedor. Cada afirmação do README aponta o teste que falha se ela deixar de ser verdade. | Laravel 12 · PHP 8.4 · PostgreSQL · Redis · Pest 4 |
+| **[ai-chatbot](https://github.com/Mendelski/ai-chatbot)** | Bot de WhatsApp com Gemini multimodal: transcreve áudio, responde por nota de voz e qualifica o lead com score de 0 a 100, com painel do operador em tempo real. As decisões de arquitetura estão em ADRs, com o trade-off de cada uma. | TypeScript · Node 20 · Express · Prisma · Socket.io · React · Docker |
+| **SmartPalace** (privado) | PMS hoteleiro multi-tenant em produção, de autoria própria. 17 domínios, assistente de IA em port e adapter com provider falso determinístico para teste, dois gateways de pagamento atrás do mesmo contrato, 1.296 casos de teste. | Laravel · Livewire · PostgreSQL · Octane · Pest 4 |
 
-    O caminho fácil é gravar o pushName como nome do contato. Na prática ele é apelido de exibição: emoji, iniciais, "Vendas 2".
+Os repositórios públicos são o código mais recente que posso mostrar sem tocar em propriedade de empregador ou de cliente.
 
-    Decidi que a baseline do lead grava **apenas** o telefone. O nome só entra quando o usuário confirma na conversa. O pushName vai para o prompt explicitamente rotulado como baixa fidelidade, para servir de dica social sem virar dado.
+---
 
-    **Trade-off:** o lead nasce sem nome e a IA gasta uma pergunta. Aceitei: nome errado no CRM é caro de descobrir e estraga a abordagem comercial.
+## Stack
 
-    → [lead/service.ts#L24-L38](https://github.com/Mendelski/ai-chatbot/blob/431f90a41cab8d2b13266a903b40bffe6efb8b42/backend/src/modules/lead/service.ts#L24-L38)
+**Principal:** PHP · Laravel · PostgreSQL · MySQL · React · TypeScript · Node.js · Docker
 
-    **3. Uma chamada de IA por mensagem, com saída tipada**
+**Também trabalho com:** Angular · NestJS · Prisma · Inertia · Livewire · Tailwind · RabbitMQ · Redis
 
-    O padrão comum é encadear chamadas: transcrever, responder, classificar intenção, extrair lead. São 3 ou 4 round-trips por mensagem, com latência somada e custo multiplicado.
+**Acompanho e uso com critério:** Go · Java · integração com LLM (structured output, STT e TTS)
 
-    Decidi uma única chamada multimodal com responseSchema declarado (reply, intent como enum, qualified, lead_score, lead_data, send_audio, transcription, reaction), com o áudio inline no mesmo request.
+---
 
-    **Trade-off:** tudo depende de um JSON. Se ele vier malformado, perco a mensagem inteira. Mitiguei com parser defensivo e resposta de fallback, clamp de score em 0-100, enum de intent revalidado no servidor e reação normalizada para um único grapheme. Coberto por testes.
+## Contato
 
-    → [ai/schema.ts#L3-L42](https://github.com/Mendelski/ai-chatbot/blob/431f90a41cab8d2b13266a903b40bffe6efb8b42/backend/src/modules/ai/schema.ts#L3-L42) · [ai/service.ts#L47-L90](https://github.com/Mendelski/ai-chatbot/blob/431f90a41cab8d2b13266a903b40bffe6efb8b42/backend/src/modules/ai/service.ts#L47-L90)
+**[linkedin.com/in/erick-mendelski](https://www.linkedin.com/in/erick-mendelski/)**
 
-    ---
-
-    ## Projetos em destaque
-
-    | Projeto | O que é | Stack |
-    |---|---|---|
-    | **[ai-chatbot](https://github.com/Mendelski/ai-chatbot)** | Bot de WhatsApp com Gemini multimodal: transcreve áudio, responde por nota de voz e qualifica o lead com score 0-100, com painel do operador em tempo real. 4 ADRs escritos. | TypeScript · Node 20 · Express · Prisma/SQLite · Socket.io · React · Docker |
-    | **[todolist-api-laravel12](https://github.com/Mendelski/todolist-api-laravel12)** | API REST de tarefas com JWT, Policies por dono, versionamento /api/v1, organização por domínio e activity log em MongoDB. 41 casos de teste em Pest 4. | Laravel 12 · PHP 8.2+ · MySQL · MongoDB · Pest 4 |
-    | **[news-manager-laravel12](https://github.com/Mendelski/news-manager-laravel12)** | Gestão de notícias full-stack num único deploy: Inertia 2 + React 19, autenticação Fortify com 2FA, lint e typecheck no CI. | Laravel 12 · React 19 · Inertia 2 · Tailwind 4 · Pest 4 |
-
-    Os três são resoluções de desafios técnicos, mantidas públicas de propósito: é o código mais recente que posso mostrar sem tocar em propriedade de empregador.
-
-    ---
-
-    ## Stack
-
-    **Principal:** PHP · Laravel · PostgreSQL · MySQL · React · TypeScript · Node.js · Docker
-
-    **Também trabalho com:** Angular · NestJS · Prisma · Inertia · Tailwind · RabbitMQ · Redis
-
-    **Acompanho e uso com critério:** Go · Java · integração com LLM (Gemini, structured output, STT/TTS)
-
-    ---
-
-    ## Contato
-
-    - LinkedIn: **[linkedin.com/in/erick-mendelski](https://www.linkedin.com/in/erick-mendelski/)**
-   
-    - Aberto a conversas sobre liderança técnica e arquitetura em produtos financeiros, e a projetos de recuperação de legado PHP/Laravel, migração de dados e auditoria de performance.
-    - 
+Aberto a conversas sobre liderança técnica e arquitetura em produtos financeiros, e a projetos de recuperação de legado PHP/Laravel, migração de dados e auditoria de performance.
